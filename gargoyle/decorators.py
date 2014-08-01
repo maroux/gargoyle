@@ -9,8 +9,8 @@ gargoyle.decorators
 from functools import wraps
 from gargoyle import gargoyle
 
-from django.core.urlresolvers import reverse
-from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import redirect
+from django.http import Http404
 
 
 def switch_is_active(key, redirect_to=None, gargoyle=gargoyle):
@@ -20,10 +20,8 @@ def switch_is_active(key, redirect_to=None, gargoyle=gargoyle):
             if not gargoyle.is_active(key, request):
                 if not redirect_to:
                     raise Http404('Switch \'%s\' is not active' % key)
-                elif redirect_to.startswith('/'):
-                    return HttpResponseRedirect(redirect_to)
                 else:
-                    return HttpResponseRedirect(reverse(redirect_to))
+                    return redirect(redirect_to)
             return func(request, *args, **kwargs)
         return wrapped
     return _switch_is_active
