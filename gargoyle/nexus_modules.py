@@ -74,6 +74,7 @@ def json(func):
 class GargoyleModule(nexus.NexusModule):
     home_url = 'index'
     name = 'gargoyle'
+    permission = 'gargoyle.can_view'
 
     def get_title(self):
         return 'Gargoyle'
@@ -121,6 +122,9 @@ class GargoyleModule(nexus.NexusModule):
         }, request)
 
     def add(self, request):
+        if not request.user.has_perm('gargoyle.add_switch'):
+            raise GargoyleException("You don't have permission to do that!")
+
         key = request.POST.get("key")
 
         if not key:
@@ -158,6 +162,9 @@ class GargoyleModule(nexus.NexusModule):
     add = json(add)
 
     def update(self, request):
+        if not request.user.has_perm('gargoyle.change_switch'):
+            raise GargoyleException("You don't have permission to do that!")
+
         switch = Switch.objects.get(key=request.POST.get("curkey"))
 
         key = request.POST.get("key")
@@ -205,6 +212,9 @@ class GargoyleModule(nexus.NexusModule):
     update = json(update)
 
     def status(self, request):
+        if not request.user.has_perm('gargoyle.change_switch'):
+            raise GargoyleException("You don't have permission to do that!")
+
         switch = Switch.objects.get(key=request.POST.get("key"))
 
         try:
@@ -234,6 +244,9 @@ class GargoyleModule(nexus.NexusModule):
     status = json(status)
 
     def delete(self, request):
+        if not request.user.has_perm('gargoyle.delete_switch'):
+            raise GargoyleException("You don't have permission to do that!")
+
         switch = Switch.objects.get(key=request.POST.get("key"))
         switch.delete()
 
@@ -249,6 +262,9 @@ class GargoyleModule(nexus.NexusModule):
     delete = json(delete)
 
     def add_condition(self, request):
+        if not request.user.has_perm('gargoyle.change_switch'):
+            raise GargoyleException("You don't have permission to do that!")
+
         key = request.POST.get("key")
         condition_set_id = request.POST.get("id")
         field_name = request.POST.get("field")
@@ -281,6 +297,9 @@ class GargoyleModule(nexus.NexusModule):
     add_condition = json(add_condition)
 
     def remove_condition(self, request):
+        if not request.user.has_perm('gargoyle.change_switch'):
+            raise GargoyleException("You don't have permission to do that!")
+
         key = request.POST.get("key")
         condition_set_id = request.POST.get("id")
         field_name = request.POST.get("field")
